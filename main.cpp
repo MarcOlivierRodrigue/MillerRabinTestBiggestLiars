@@ -4,7 +4,7 @@
 #include <omp.h>
 #include <vector>
 
-char* dataPath = "../../data/";
+char* dataPath = "../../data";
 const char* isPrimeFile = "isPrime.txt";
 const char* liarCounter = "liars.txt";
 
@@ -69,20 +69,20 @@ bool TestWithness_MillerRabin(int n, int a)
 {
     int d, m;
     PrepareN(n, d, m);
-    int x = pow(a, d);
+    int x = (int)pow(a, d) % n;
     if (x == 1 || x == n - 1)
     {
-        return true;
+        return false;
     }
     for(int i = 0; i < m-1; i++)
     {
         x = (int)pow(x, 2) % n;
-        if(x = n-1)
+        if(x == n-1)
         {
-            return true;
+            return false;
         }
     }
-    return false;
+    return true;
 }
 
 
@@ -91,7 +91,7 @@ bool isPrime(int n)
     std::vector<int> starWithness = getStarWitnesses(n);
     for (auto it = starWithness.begin(); it != starWithness.end(); it++) 
     {
-        if (!TestWithness_MillerRabin(n, *it))
+        if (TestWithness_MillerRabin(n, *it))
         {
             return false;
         }
@@ -102,24 +102,19 @@ bool isPrime(int n)
 
 int main () 
 {
-    /*
     std::ofstream myfile;
-    myfile.open(strcat(dataPath, "isPrime.txt"));
-    myfile << "2:1\n3:1";
-    myfile.close();
+    myfile.open(strcat(dataPath, isPrimeFile));
+    myfile << "2:1\n3:1\n";
 
     int initNumb = 5;
-    */
-    std::cout << isPrime(10) << std::endl;
-    /*
-        #pragma omp parallel for
-        for (int i = initNumb; i < std::numeric_limits<int>::max(); i += 2)
-        {
-            std::vector<int> starWithness = getStarWitnesses(i);
-        }
-    */
+    std::numeric_limits<int>::max();
+    for (int i = initNumb; i < 100; i += 2)
+    {
+       myfile << i + ":" + isPrime(i);
+       myfile << "\n";
+    }
 
-
+    myfile.close();
     
     return 0;
 }
